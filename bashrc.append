@@ -1,0 +1,12 @@
+
+## DO NOT EDIT / POTATO WRITES
+
+POTATO_PATH="POTATO_PATH_PLACEHOLDER"
+
+custom_bashrc="$POTATO_PATH/potatorc.sh"
+if [ -f "$custom_bashrc" ]; then
+  . $custom_bashrc
+fi
+
+## POTATO DONE.
+
