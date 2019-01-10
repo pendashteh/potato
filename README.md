@@ -7,4 +7,4 @@ It's comporised of configurations and tweeks to standard packages, as well as le
 
 It's designed to be fully customisable while allowing for receiving updates from upstream.
 
-[ the code base is baking if you've arrived early. "Watch" the space to get notified when it's ready to serve! ] 
+[ The farm is at the admentment stage ]
