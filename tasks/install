@@ -6,8 +6,8 @@
 function main() {
   potato_install_append bashrc.append $HOME/.bashrc POTATO_PATH_PLACEHOLDER $(pwd)
   # potato_install_place dot-potatorc $HOME/.potatorc
-  potato_install_mkdir $HOME/.potato lib available enabled
-  ln --symbolic --force $potato_root/available $HOME/.potato/available
+  potato_install_mkdir $HOME/.potato lib enabled
+  ln --symbolic --force $potato_root/available $HOME/.potato/
 }
 
 function potato_install_place() {
