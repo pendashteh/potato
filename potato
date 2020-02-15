@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+. ./lib/potato.inc.sh
+
+# @TODO implement 'help' task
+POTATO_COMMAND_DEFAULT="help"
+
+potato_run "${@}"

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Deny direct access.
+[ -z "$POTATO" ] && exit 1
+
+function main() {
+  local addin_name=$1
+  ln --symbolic --force $HOME/.potato/available/$1.bashrc $HOME/.potato/enabled/$1.bashrc
+}
+
+main ${@}

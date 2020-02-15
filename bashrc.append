@@ -9,4 +9,3 @@ if [ -f "$custom_bashrc" ]; then
 fi
 
 ## POTATO DONE.
-
