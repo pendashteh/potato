@@ -106,5 +106,21 @@ function potato_input() {
 	[ -z "$value" ] && value=$default
 	echo $value
 }
+function potato_app_setup_autocomplete() {
+	local app_name=$1
+	complete -o nospace -F _potato_setup_autocomplete $app_name
+}
+
+# Copyright https://askubuntu.com/a/483149
+_potato_setup_autocomplete()
+{
+  _script_commands=$(ls $POTATO_ROOT/tasks)
+  local cur
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  COMPREPLY=( $(compgen -W "${_script_commands}" -- ${cur}) )
+
+  return 0
+}
 
 __load "${@}"
