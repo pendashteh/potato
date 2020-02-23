@@ -1,9 +1,7 @@
 # bashed-potato
-Bash to the moon.
+A framework for coding software in Bash
 
-Bashed Potato aims at making standard bash more usable, more useful and more importantly, more fun to be in!
-
-It's comprised of configurations and tweeks to standard packages, as well as leveraging on external packages if you choose to include.
+Bashed Potato is a framework as well as a Bash software that uses the framework itself as a live example.
 
 It's designed to be fully customisable while allowing for receiving updates from upstream.
 
@@ -24,4 +22,7 @@ Some examples:
 ```
 
 # Status
+Framework Version 2 is stable.
+
 Under active development.
+
