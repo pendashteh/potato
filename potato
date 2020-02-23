@@ -7,5 +7,4 @@ whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} 
 
 . $(dirname $(whereis_realpath "$0"))/core
 potato_load_app $POTATO_CORE
-
-[ "$POTATO" ] && potato_exec "${@}" || echo "Failed to load potatos!"
+potato_exec "${@}"

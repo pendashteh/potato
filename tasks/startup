@@ -2,12 +2,5 @@
 
 function run() {
   echo "It's a potato farm!"
-  source_all $HOME/.potato/enabled/*.bashrc
-}
-function source_all() {
-  local __file_pattern=$1
-	[ ! -e $__file_pattern ] && exit
-  for f in $__file_pattern; do
-    source $f;
-  done
+  for f in $HOME/.potato/enabled/*.bashrc; do source $f; done
 }
