@@ -4,3 +4,6 @@ function run() {
   local addin_name=$(potato_get_arg 1)
   ln --symbolic --force $HOME/.potato/available/$addin_name.bashrc $HOME/.potato/enabled/$addin_name.bashrc
 }
+function __autocomplete() {
+  ls $HOME/.potato/available | sed 's/.bashrc//'
+}

@@ -3,6 +3,10 @@
 POTATO=2
 
 function __load() {
+
+	# Load once
+	[ ! -z "$POTATO_CORE" ] && return 0;
+
 	POTATO_CORE=$(dirname $BASH_SOURCE)
 
 	POTATO_DEFAULT_ID="default"
@@ -79,7 +83,9 @@ function potato_test_args() {
 
 function potato_load_task() {
 	local path=$(potato_task_path $1)
-	[ -e $path ] && . $path || potato_debug "Failed to load $path"
+	[ ! -e $path ] && potato_debug "Failed to load $path"
+	. $BASH_SOURCE	# unsets functions set by previousely loaded task
+	. $path
 }
 
 function potato_run_task() {
@@ -114,13 +120,19 @@ function potato_app_setup_autocomplete() {
 # Copyright https://askubuntu.com/a/483149
 _potato_setup_autocomplete()
 {
-  _script_commands=$(ls $POTATO_ROOT/tasks)
-  local cur
   COMPREPLY=()
-  cur="${COMP_WORDS[COMP_CWORD]}"
-  COMPREPLY=( $(compgen -W "${_script_commands}" -- ${cur}) )
-
+	if [ "${#COMP_WORDS[@]}" -eq 2 ]; then
+		local list=$(ls $POTATO_ROOT/tasks)
+	  COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
+	elif [ "${#COMP_WORDS[@]}" -eq 3 ]; then
+		local task=${COMP_WORDS[1]}
+		potato_load_task $task
+		local list=$(__autocomplete)
+		COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
+	fi
   return 0
 }
-
+function __autocomplete() {
+	echo "";
+}
 __load "${@}"
