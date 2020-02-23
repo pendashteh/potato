@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 
 app() {
-
-  potato_load core
-
-  # @TODO implement 'help' task
-  POTATO_DEFAULT_TASK="help"
-
+  potato_load $POTATO_ROOT/core
   [ "$POTATO" ] && potato_exec "${@}" || echo "Failed to load potatos!"
 }
 

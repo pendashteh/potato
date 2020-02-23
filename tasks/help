@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+function run() {
+  echo "
+Available commands:
+$(ls $POTATO_APP_ROOT/tasks | xargs printf '- %s\n')
+  "
+}

@@ -1,26 +1,13 @@
 #!/usr/bin/env bash
 
-# Deny direct access.
-[ -z "$POTATO" ] && exit 1
-
-function main() {
-  potato_install_append bashrc.append $HOME/.bashrc POTATO_PATH_PLACEHOLDER $(pwd)
-  # potato_install_place dot-potatorc $HOME/.potatorc
-  potato_install_mkdir $HOME/.potato lib enabled
-  ln --symbolic --force $potato_root/available $HOME/.potato/
+function run() {
+  install_append bashrc.append $HOME/.bashrc $INSTALL_BEGIN $INSTALL_END
+  install_template $HOME/.bashrc POTATO_PATH_PLACEHOLDER $POTATO_APP_ROOT/potato
+  install_mkdir $HOME/.potato lib enabled
+  ln --symbolic --force $POTATO_APP_ROOT/available $HOME/.potato/
 }
 
-function potato_install_place() {
-  local __src=$1
-  local __dest=$2
-  if [ -e $__src ]; then
-    cp $__src $__dest;
-  else
-    echo "[ERROR] Could not stat $__src"
-  fi
-}
-
-function potato_install_mkdir() {
+function install_mkdir() {
   local __base=$1
   for var in "${@:2}"; do
     echo "Attempting creating directory $__base/$var"
@@ -28,17 +15,18 @@ function potato_install_mkdir() {
   done
 }
 
-function potato_install_append() {
-  src=$1
-  dest=$2
-  text1=$3
-  text2=$4
-
-  text1=$(echo "$text1" | sed 's/\//\\\//g')
-  text2=$(echo "$text2" | sed 's/\//\\\//g')
-
+function install_append() {
+  local src=$1
+  local dest=$2
   echo "Appending $src to $dest"
-  sed -e "s/$text1/$text2/" $src >> $dest
+  cat $src >> $dest
 }
 
-main
+function install_template() {
+  local file=$1
+  local text1=$2
+  local text2=$3
+  text1=$(echo "$text1" | sed 's/\//\\\//g')
+  text2=$(echo "$text2" | sed 's/\//\\\//g')
+  sed -ie "s/$text1/$text2/" $file
+}
