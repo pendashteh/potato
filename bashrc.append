@@ -1,5 +1,8 @@
 ## DO NOT EDIT / POTATO WRITES
 
-POTATO_PATH_PLACEHOLDER source
+export POTATO_ENV_DEBUG=1
+. /home/ubeta/apps/potato/core
+potato_load_app $POTATO_CORE
+potato_run_task "startup"
 
 ## POTATO DONE.

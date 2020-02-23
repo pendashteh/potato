@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+
+function run() {
+  local addin_name=$(potato_get_arg 1)
+  [ -z "$addin_name" ] && echo "[ERROR] potato remove [addin_name]" && exit 1
+  local addin_path=$HOME/.potato/enabled/$addin_name.bashrc
+  [ ! -f "$addin_path" ] && echo "[INFO] Addin not enabled."
+}

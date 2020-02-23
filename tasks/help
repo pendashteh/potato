@@ -3,6 +3,6 @@
 function run() {
   echo "
 Available commands:
-$(ls $POTATO_APP_ROOT/tasks | xargs printf '- %s\n')
+$(ls $POTATO_ROOT/tasks | xargs printf '- %s\n')
   "
 }

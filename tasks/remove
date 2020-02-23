@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-
-function run() {
-  local addin_name=$(potato_get_arg 1)
-  rm $HOME/.potato/enabled/$addin_name.bashrc
-}

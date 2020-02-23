@@ -1,14 +1,1 @@
-#!/usr/bin/env bash
-
-function __load() {
-  . core
-  echo "It's a potato farm."
-  source_all $HOME/.potato/enabled/*.bashrc
-}
-
-function source_all() {
-  local __file_pattern=$1
-	[ -e $__file_pattern ] && for f in $__file_pattern; do source $f; echo $f; done
-}
-
-__load "${@}"
+POTATO_DEFAULT_TASK="help"

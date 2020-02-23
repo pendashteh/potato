@@ -1,19 +1,11 @@
 #!/usr/bin/env bash
 
-app() {
-
-  potato_load core
-
-  # @TODO implement 'help' task
-  POTATO_DEFAULT_TASK="help"
-
-  [ "$POTATO" ] && potato_exec "${@}" || echo "Failed to load potatos!"
-}
-
 # Copyright http://stackoverflow.com/a/7400673/257479
 myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
 whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
-potato_load() { cd $(dirname $(whereis_realpath "$0")) && . $1; }
 
-app "${@}"
+. $(dirname $(whereis_realpath "$0"))/core
+potato_load_app $POTATO_CORE
+
+[ "$POTATO" ] && potato_exec "${@}" || echo "Failed to load potatos!"

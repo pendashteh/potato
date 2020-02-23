@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+function run() {
+  echo "It's a potato farm!"
+  source_all $HOME/.potato/enabled/*.bashrc
+}
+function source_all() {
+  local __file_pattern=$1
+	[ ! -e $__file_pattern ] && exit
+  for f in $__file_pattern; do
+    source $f;
+  done
+}
