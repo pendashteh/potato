@@ -7,3 +7,10 @@ function run() {
 function __autocomplete() {
   ls $HOME/.potato/available | sed 's/.bashrc//'
 }
+function __help() {
+  echo "
+Enables an addin to be loaded in .bashrc
+
+Usage: potato enable [addin_name]
+  "
+}

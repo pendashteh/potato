@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 
 function run() {
+  local task=$(potato_get_arg 1)
+  [ -z "$task" ] && task=$(potato_get_task)
+  potato_load_task $task
+  __help
+}
+function __help() {
   echo "
 Available commands:
 $(ls $POTATO_ROOT/tasks | xargs printf '- %s\n')
   "
+}
+function __autocomplete() {
+  ls $POTATO_ROOT/tasks
 }
