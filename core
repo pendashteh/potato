@@ -2,10 +2,9 @@
 
 POTATO=2
 
-function __load() {
+export POTATO_CORE
 
-	# Load once
-	[ ! -z "$POTATO_CORE" ] && return 0;
+function __load() {
 
 	POTATO_CORE=$(dirname $BASH_SOURCE)
 
@@ -83,8 +82,8 @@ function potato_test_args() {
 
 function potato_load_task() {
 	local path=$(potato_task_path $1)
-	[ ! -e $path ] && potato_debug "Failed to load $path"
-	. $BASH_SOURCE	# unsets functions set by previousely loaded task
+	[ ! -e $path ] && potato_debug "Failed to load $path" && return 0
+	POTATO_SKIP_LOAD=1 . $BASH_SOURCE	# unsets functions set by previousely loaded task
 	. $path
 }
 
@@ -138,4 +137,5 @@ function __autocomplete() {
 function __help() {
 	potato_debug "provide this function in the task to enable task-specific help."
 }
-__load "${@}"
+
+[ -z "$POTATO_SKIP_LOAD" ] && __load "${@}"
