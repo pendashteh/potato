@@ -1,6 +1,7 @@
 ## DO NOT EDIT / POTATO WRITES
 
-export POTATO_ENV_DEBUG=1
+export POTATO_DEBUG=1
+export POTATO_DEBUG_VERBOSE=
 . /home/ubeta/apps/potato/core
 potato_load_app $POTATO_CORE
 potato_run_task "startup"
