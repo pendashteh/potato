@@ -6,5 +6,5 @@ whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- 
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
 . $(dirname $(whereis_realpath "$0"))/core
-potato_load_app $POTATO_CORE
+potato_load_app
 potato_exec "${@}"

@@ -18,9 +18,18 @@ function __load() {
 }
 
 # Load an app by name or path
+# Usecase:
+#   potato_load_app		# Run from within the executable
+#		potato_load_app /path/to/executable
+#											# Load an app from within another script
+#		potato_load_app app_name
+#											# Re-load the app by name; required when dealing with
+#											# multiple apps in the same shell
 function potato_load_app() {
 	unset POTATO_APP_NAME
-	if [ -d $1 ]; then
+	if [ -z "$1" ]; then
+		potato_load_app_by_path $(dirname $(whereis_realpath "$0"))
+	elif [ -d $1 ]; then
 		potato_load_app_by_path $1
 	elif [ $(potato_app_is_loaded $1) ]; then
 		potato_load_app_by_name $1
@@ -56,6 +65,14 @@ function potato_app_is_loaded() {
 	[ ! -z "$POTATO_INFO[${app_name}_root]" ]
 }
 
+# TO be used with $ bash -x cmd instead of $ cmd
+function potato_console_log() {
+	local comment='value for '$1' is '${!1}
+}
+function potato_comment() {
+	local comment="${@}"
+}
+
 function potato_declare() {
 	local var_name=$1
 	local default
@@ -76,21 +93,19 @@ function potato_debug() {
 }
 
 function potato_process_input_args() {
-	if [ ! -z "$(potato_task_exists $1)" ]; then
+	if [ -f $(potato_task_path $1) ]; then
+		potato_comment 'task identified as '$1
 		POTATO_THIS_TASK="$1"
 		POTATO_THIS_ARGS=("${@:2}")
-	elif [ "$#" -gt "1" ] && [ ! -z "$(potato_task_exists $2)" ]; then
+	elif [ "$#" -gt "1" ] && [ -f $(potato_task_path $2) ]; then
+		potato_comment 'id was detected. task identified as '$2
 		POTATO_THIS_ID=$1
 		POTATO_THIS_TASK=$2
 		POTATO_THIS_ARGS=("${@:3}")
 	else
+		potato_comment 'none. task remains as '$POTATO_THIS_TASK
 		POTATO_THIS_ARGS=("${@:1}")
 	fi
-}
-
-function potato_task_exists() {
-	local task=$1
-	[ -f "$(potato_task_path $task)" ] && echo "1" || echo ""
 }
 
 function potato_task_path() {
@@ -105,7 +120,7 @@ function potato_app_get_tasks() {
 	local root=$(potato_app_get_root $app_name)
 	local pattern=$(sed "s/__TASK__/*/gI;s/__APP__/$POTATO_APP_NAME/gI" <<< $POTATO_TASK_PATH_PATTERN)
 	local regexp=$(sed "s/__TASK__/\(\.\*\)/gI;s/__APP__/$POTATO_APP_NAME/gI" <<< $POTATO_TASK_PATH_PATTERN)
-	for f in $(find $root -name $pattern -printf '%P\n'); do
+	for f in $(find $root -path "*$pattern" -printf '%P\n' -type f); do
 		[[ $f =~ $regexp ]] && echo ${BASH_REMATCH[1]}
 	done
 }
@@ -173,6 +188,13 @@ function potato_input() {
 	[ -z "$value" ] && value=$default
 	echo $value
 }
+
+function potato_setup_autocomplete() {
+	local app_loader=$1
+	potato_load_app $1
+	potato_app_setup_autocomplete $POTATO_APP_NAME
+}
+
 function potato_app_setup_autocomplete() {
 	local app_name=$1
 	complete -o nospace -F _potato_setup_autocomplete $app_name
@@ -202,5 +224,10 @@ function __autocomplete() {
 function __help() {
 	potato_debug "provide this function in the task to enable task-specific help."
 }
+
+# Copyright http://stackoverflow.com/a/7400673/257479
+myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
+whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
+whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
 [ -z "$POTATO_SKIP_LOAD" ] && __load "${@}"
