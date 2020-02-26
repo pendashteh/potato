@@ -220,7 +220,7 @@ _potato_setup_autocomplete()
   return 0
 }
 function __autocomplete() {
-	potato_debug "provide this function to allow autocompletion for arguments."
+	potato_comment "provide this function to allow autocompletion for arguments."
 }
 function __help() {
 	potato_debug "provide this function in the task to enable task-specific help."
