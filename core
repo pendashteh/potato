@@ -48,7 +48,7 @@ function potato_load_app_by_path() {
 # Re-load the app (this time by name)
 function potato_load_app_by_name() {
 	local app_name=$1
-	POTATO_ROOT=$POTATO_INFO["${app_name}_root"]
+	POTATO_ROOT=${POTATO_INFO["${app_name}_root"]}
 	_potato_load_app
 	POTATO_APP_NAME=$app_name
 }
@@ -212,6 +212,7 @@ _potato_setup_autocomplete()
 	  COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
 	elif [ "${#COMP_WORDS[@]}" -eq 3 ]; then
 		local task=${COMP_WORDS[1]}
+		potato_load_app_by_name $app_name
 		potato_load_task $task
 		local list=$(__autocomplete)
 		COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
