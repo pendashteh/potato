@@ -7,3 +7,6 @@ function run() {
   [ ! -f "$addin_path" ] && echo "[INFO] Addin not enabled."
   rm $addin_path
 }
+function __autocomplete() {
+  ls $HOME/.potato/enabled | sed 's/.bashrc//'
+}

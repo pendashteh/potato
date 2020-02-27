@@ -3,8 +3,8 @@
 function run() {
   install_append bashrc.append $HOME/.bashrc
   install_template $HOME/.bashrc POTATO_PATH_PLACEHOLDER $POTATO_ROOT/potato
-  mkdir $HOME/.potato/enabled
-  ln --symbolic --force $POTATO_ROOT/available $HOME/.potato/
+  mkdir -p $HOME/.potato/available
+  mkdir -p $HOME/.potato/enabled
 }
 
 function install_append() {

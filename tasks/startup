@@ -2,5 +2,9 @@
 
 function run() {
   echo "It's a potato farm!"
-  for f in $HOME/.potato/enabled/*.bashrc; do source $f; done
+  for f in $(find $HOME/.potato/enabled -name '*.bashrc'); do
+    local addin_name=$([[ $f =~ ^.*\/(.*)\.bashrc ]] && echo ${BASH_REMATCH[1]})
+    printf "Activating add-in '%s'\n" $addin_name
+    . $f
+  done
 }

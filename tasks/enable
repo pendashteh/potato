@@ -2,10 +2,21 @@
 
 function run() {
   local addin_name=$(potato_get_arg 1)
-  ln --symbolic --force $HOME/.potato/available/$addin_name.bashrc $HOME/.potato/enabled/$addin_name.bashrc
+  local paths=()
+  paths[0]=$HOME/.potato
+  paths[1]=$POTATO_ROOT
+  for p in "${paths[@]}"; do
+    local src=$p/available/$addin_name.bashrc
+    [ -f $src ] && ln --symbolic --force $src $HOME/.potato/enabled/
+  done
 }
 function __autocomplete() {
-  ls $HOME/.potato/available | sed 's/.bashrc//'
+  local paths=()
+  paths[0]=$HOME/.potato
+  paths[1]=$POTATO_ROOT
+  for p in "${paths[@]}"; do
+    ls $p/available | sed 's/.bashrc//'
+  done
 }
 function __help() {
   echo "
