@@ -2,16 +2,18 @@
 
 POTATO=2
 
+# Path to this file
 export POTATO_CORE
 
 declare -A POTATO_INFO
 
 function __load() {
 
-	POTATO_CORE=$(dirname $BASH_SOURCE)
+	POTATO_CORE=$BASH_SOURCE
 
 	POTATO_DEFAULT_ID="default"
 	POTATO_DEFAULT_TASK="__main"
+	POTATO_TASK_PATH_PATTERN="___TASK__"
 
 	potato_declare POTATO_DEBUG ""
 	potato_declare POTATO_DEBUG_VERBOSE ""
@@ -30,11 +32,12 @@ function potato_load_app() {
 	if [ -z "$1" ]; then
 		potato_load_app_by_path $(dirname $(whereis_realpath "$0"))
 	elif [ -d $1 ]; then
-		potato_load_app_by_path $1
+		potato_load_app_by_path $(realpath $1)
 	elif [ $(potato_app_is_loaded $1) ]; then
 		potato_load_app_by_name $1
 	else
 		potato_debug 'failed at loading '$1
+		_throw 1000 'failed at loading '$1
 	fi
 }
 
@@ -61,8 +64,8 @@ function _potato_load_app() {
 }
 
 function potato_app_is_loaded() {
-	local $app_name
-	[ ! -z "$POTATO_INFO[${app_name}_root]" ]
+	local app_name=$1
+	[ ${POTATO_INFO[${app_name}_root]+'EXISTS'} ] && echo 1
 }
 
 # TO be used with $ bash -x cmd instead of $ cmd
@@ -189,9 +192,23 @@ function potato_input() {
 	echo $value
 }
 
+function _try {
+	unset POTATO_EXCEPTION_MESSAGE
+	$1 ${@:2}
+}
+function _catch() {
+	[ ! -z "$POTATO_EXCEPTION_MESSAGE" ] && printf -v "$1" '%s' "$POTATO_EXCEPTION_MESSAGE" && return
+}
+function _throw() {
+	POTATO_EXCEPTION_ERRNO=$1
+	POTATO_EXCEPTION_MESSAGE=$2
+}
 function potato_setup_autocomplete() {
 	local app_loader=$1
-	potato_load_app $1
+	_try potato_load_app $1
+	_catch E && {
+		echo "Exception: $E!"
+	}
 	potato_app_setup_autocomplete $POTATO_APP_NAME
 }
 

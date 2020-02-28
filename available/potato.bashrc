@@ -1,1 +1,1 @@
-potato_setup_autocomplete $POTATO_CORE
+potato_setup_autocomplete 'potato'
