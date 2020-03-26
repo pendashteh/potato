@@ -68,6 +68,11 @@ function potato_app_is_loaded() {
 	[ ${POTATO_INFO[${app_name}_root]+'EXISTS'} ] && echo 1
 }
 
+function potato_include() {
+	local path=$POTATO_ROOT'/'$1
+	[ -f "$path" ] && . $path
+}
+
 # TO be used with $ bash -x cmd instead of $ cmd
 function potato_console_log() {
 	local comment='value for '$1' is '${!1}
@@ -151,6 +156,10 @@ function potato_get_task() {
 function potato_get_arg() {
 	local index=$1
 	echo ${POTATO_THIS_ARGS[$index -1]}
+}
+
+function potato_get_args() {
+	echo "${POTATO_THIS_ARGS[@]}"
 }
 
 function potato_test_args() {
