@@ -1,24 +1,20 @@
 #!/usr/bin/env bash
 
 function run() {
-  install_append bashrc.append $HOME/.bashrc
-  install_template $HOME/.bashrc POTATO_PATH_PLACEHOLDER $POTATO_ROOT/potato
+  local append_text=$(sed "s#__PATH__#$POTATO_ROOT#g" <<< $(cat $POTATO_ROOT/bashrc.append))
+  local bashrc_path=$(install_get_bashrc)
+  echo "$append_text" >> $bashrc_path
+
   mkdir -p $HOME/.potato/available
   mkdir -p $HOME/.potato/enabled
 }
 
-function install_append() {
-  local src=$1
-  local dest=$2
-  echo "Appending $src to $dest"
-  cat $src >> $dest
+function install_get_bashrc {
+  install_prepare_bashrc
+  echo $HOME/.bashrc
 }
 
-function install_template() {
-  local file=$1
-  local text1=$2
-  local text2=$3
-  text1=$(echo "$text1" | sed 's/\//\\\//g')
-  text2=$(echo "$text2" | sed 's/\//\\\//g')
-  sed -ie "s/$text1/$text2/" $file
+function install_prepare_bashrc {
+  # @TODO fix for macos; ensure ~/.bashrc is sourced
+  return
 }

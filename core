@@ -2,14 +2,9 @@
 
 POTATO=2
 
-# Path to this file
-export POTATO_CORE
-
 declare -A POTATO_INFO
 
 function __load() {
-
-	POTATO_CORE=$BASH_SOURCE
 
 	POTATO_DEFAULT_ID="default"
 	POTATO_DEFAULT_TASK="__main"
@@ -18,6 +13,14 @@ function __load() {
 	potato_declare POTATO_DEBUG ""
 	potato_declare POTATO_DEBUG_VERBOSE ""
 }
+
+##
+# @function whereis_realpath
+# Cross-platform equivalent for realpath()
+# Copyright http://stackoverflow.com/a/7400673/257479
+myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
+whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
+whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
 # Load an app by name or path
 # Usecase:

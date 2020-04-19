@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-# Copyright http://stackoverflow.com/a/7400673/257479
-myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
-whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
-whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
+# If potato is not installed, assume the command is run as `./potato` and try to load the core locally.
+[ -z "$POTATO_CORE" ] && POTATO_CORE=$(dirname $0)/core
 
-. $(dirname $(whereis_realpath "$0"))/core
+# Source potato core
+[ ! -r "$POTATO_CORE" ] && echo "Potato core was not found at "$POTATO_CORE && exit || . $POTATO_CORE
+
 potato_load_app
 potato_exec "${@}"
