@@ -7,10 +7,9 @@ function run() {
   __help
 }
 function __help() {
-  echo "
-Available commands:
-$(ls $POTATO_ROOT/tasks | xargs printf '- %s\n')
-  "
+  local -a tasks=( $(potato_tasks_list) )
+  echo '__ Available tasks:'
+  printf "|_ %s\n" ${tasks[@]}
 }
 function __autocomplete() {
   ls $POTATO_ROOT/tasks
