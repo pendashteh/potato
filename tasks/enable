@@ -6,7 +6,7 @@ function run() {
   paths[0]=$HOME/.potato
   paths[1]=$POTATO_ROOT
   for p in "${paths[@]}"; do
-    local src=$p/available/$addin_name.bashrc
+    local src=$p/available/$addin_name
     [ -f $src ] && ln --symbolic --force $src $HOME/.potato/enabled/
   done
 }
@@ -15,13 +15,17 @@ function __autocomplete() {
   paths[0]=$HOME/.potato
   paths[1]=$POTATO_ROOT
   for p in "${paths[@]}"; do
-    ls $p/available | sed 's/.bashrc//'
+    ls $p/available
   done
 }
 function __help() {
-  echo "
-Enables an addin to be loaded in .bashrc
-
+  echo '
 Usage: potato enable [addin_name]
-  "
+
+Enables an addin from a list of available add-ins.
+There are three forms of add-ins:
+*.bashrc # loads as part of .bashrc or .bash_profile
+*.precommand # executes before every command
+*.postcommand # executes after every command
+  '
 }

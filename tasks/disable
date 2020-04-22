@@ -2,11 +2,14 @@
 
 function run() {
   local addin_name=$(potato_get_arg 1)
-  [ -z "$addin_name" ] && echo "[ERROR] potato remove [addin_name]"
-  local addin_path=$HOME/.potato/enabled/$addin_name.bashrc
-  [ ! -f "$addin_path" ] && echo "[INFO] Addin not enabled."
+  ! validate && echo "[ERROR] Usage: potato remove [addin_name]" && return
+  local addin_path=$HOME/.potato/enabled/$addin_name
+  [ ! -f "$addin_path" ] && echo "[INFO] Addin not enabled." && return
   rm $addin_path
 }
 function __autocomplete() {
-  ls $HOME/.potato/enabled | sed 's/.bashrc//'
+  ls $HOME/.potato/enabled
+}
+function validate {
+  [ ! -z "$addin_name" ]
 }

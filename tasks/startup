@@ -2,9 +2,32 @@
 
 function run() {
   echo "It's a potato farm!"
-  for f in $(find $HOME/.potato/enabled -name '*.bashrc'); do
-    local addin_name=$([[ $f =~ ^.*\/(.*)\.bashrc ]] && echo ${BASH_REMATCH[1]})
-    printf "Activating add-in '%s'\n" $addin_name
-    . $f
-  done
+  _source_all $HOME/.potato/enabled *.bashrc
+  # Source: https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/
+  trap "run_precommand" DEBUG
+  FIRST_PROMPT=1
+  PROMPT_COMMAND="run_postcommand"
+}
+
+function run_precommand() {
+  if [ -z "$AT_PROMPT" ]; then
+    return
+  fi
+  unset AT_PROMPT
+  _source_all $HOME/.potato/enabled '*.precommand'
+}
+
+function run_postcommand() {
+  AT_PROMPT=1
+  if [ -n "$FIRST_PROMPT" ]; then
+    unset FIRST_PROMPT
+    return
+  fi
+  _source_all $HOME/.potato/enabled '*.postcommand'
+}
+
+function _source_all {
+  local dir=$1
+  local pattern=$2
+  for file in $(find $dir -maxdepth 1 -name $pattern -print -quit); do source $file; done
 }
