@@ -185,13 +185,14 @@ function potato_load_task() {
 
 function potato_run_task() {
 	potato_load_task $1
-	run
+	shift
+	run $@
 }
 
 function potato_exec() {
 	potato_process_input_args "${@}"
 	potato_load_task $(potato_get_task)
-	run
+	run $(potato_get_args)
 }
 
 function run() {
