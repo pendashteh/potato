@@ -266,3 +266,22 @@ whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- 
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
 [ -z "$POTATO_SKIP_LOAD" ] && __load "${@}"
+
+# String Utils
+
+##
+# helper: splits a string by a given delimiter
+# string=name,grade
+# arr=( $(potato_string_explode ',' $string) )
+function potato_string_split {
+  local delimiter=$1
+  local string=$2
+  parts=(${string//$delimiter/ })
+  echo ${parts[@]}
+}
+
+##
+# helper
+function potato_is_numeric {
+  [[ $1 == ?(-)+([0-9]) ]]
+}
