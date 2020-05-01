@@ -7,10 +7,13 @@ function run() {
   __help
 }
 function __help() {
-  echo "
-Available commands:
-$(ls $POTATO_ROOT/tasks | xargs printf '- %s\n')
-  "
+  echo ''
+  echo 'Available tasks:'
+  #$(ls $POTATO_ROOT/tasks | xargs printf '- %s\n')
+  printf ' - %s\n' $(potato_tasks_list)
+  echo ''
+  echo 'Available functions:'
+  printf ' - %s\n' $(declare -F | cut -d' ' -f3 | grep potato | grep '^potato_.*')
 }
 function __autocomplete() {
   ls $POTATO_ROOT/tasks
