@@ -14,6 +14,11 @@ function __help() {
   echo ''
   echo 'Available functions:'
   printf ' - %s\n' $(declare -F | cut -d' ' -f3 | grep potato | grep '^potato_.*')
+  echo ''
+  echo 'Available environmental variables:'
+  printf ' - %s\n' $(printenv | grep '^POTATO')
+  # @TODO below is failed attempt to properly display all variables using declare.
+  #IFS="\n"; printf ' - %s\n' "$(declare -p | grep '\sPOTATO')"
 }
 function __autocomplete() {
   ls $POTATO_ROOT/tasks
