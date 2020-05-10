@@ -1,4 +1,4 @@
-# bashed-potato
+# potato
 A framework for coding software in Bash
 
 Bashed Potato is a framework as well as a Bash software that uses the framework itself as a live example.
