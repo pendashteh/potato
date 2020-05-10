@@ -1,9 +1,6 @@
-## DO NOT EDIT / POTATO WRITES
-
 export POTATO_DEBUG=1
 export POTATO_DEBUG_VERBOSE=
-. /home/ubeta/apps/potato/core
-potato_load_app $POTATO_CORE
+export POTATO_CORE="{{POTATO_CORE}}"
+. $POTATO_CORE
+potato_load_app {{POTATO_ROOT}}
 potato_run_task "startup"
-
-## POTATO DONE.
