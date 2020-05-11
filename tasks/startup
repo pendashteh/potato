@@ -2,7 +2,7 @@
 
 function run() {
   echo "It's a potato farm!"
-  _source_all $HOME/.potato/enabled *.bashrc
+  _source_all $HOME/.potato/enabled '*.bashrc'
   # Source: https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/
   trap "run_precommand" DEBUG
   FIRST_PROMPT=1
@@ -29,5 +29,8 @@ function run_postcommand() {
 function _source_all {
   local dir=$1
   local pattern=$2
-  for file in $(find $dir -maxdepth 1 -name $pattern -print -quit); do source $file; done
+  for file in $(find $dir -maxdepth 1 -name "$pattern"); do
+    echo 'sourcing :'$file
+    source $file
+  done
 }
