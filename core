@@ -5,6 +5,9 @@ POTATO=2
 # Path to this file
 export POTATO_CORE
 
+# Path to the root of loaded application
+export POTATO_ROOT
+
 declare -A POTATO_INFO
 
 function __load() {
