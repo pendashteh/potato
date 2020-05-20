@@ -12,8 +12,6 @@ declare -A POTATO_INFO
 
 function __load() {
 
-	POTATO_CORE=$BASH_SOURCE
-
 	POTATO_DEFAULT_ID="default"
 	POTATO_DEFAULT_TASK="__main"
 	POTATO_TASK_PATH_PATTERN="___TASK__"
@@ -21,6 +19,14 @@ function __load() {
 	potato_declare POTATO_DEBUG ""
 	potato_declare POTATO_DEBUG_VERBOSE ""
 }
+
+##
+# @function whereis_realpath
+# Cross-platform equivalent for realpath()
+# Copyright http://stackoverflow.com/a/7400673/257479
+myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
+whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
+whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
 # Load an app by name or path
 # Usecase:
@@ -121,15 +127,15 @@ function potato_process_input_args() {
 
 function potato_task_path() {
 	local task=$1
-	local path=$(sed "s/__TASK__/$task/gI;s/__APP__/$POTATO_APP_NAME/gI" <<< $POTATO_TASK_PATH_PATTERN)
+	local path=$(sed "s/__TASK__/$task/g;s/__APP__/$POTATO_APP_NAME/g" <<< $POTATO_TASK_PATH_PATTERN)
 	echo "$POTATO_ROOT/$path"
 }
 
 function _potato_tasks_list() {
 	local root=$1
-	local pattern=$(sed "s/__TASK__/*/gI;s/__APP__/$POTATO_APP_NAME/gI" <<< $POTATO_TASK_PATH_PATTERN)
-	local regexp=$(sed "s/__TASK__/\(\.\*\)/gI;s/__APP__/$POTATO_APP_NAME/gI" <<< $POTATO_TASK_PATH_PATTERN)
-	for f in $(find $root -path "*$pattern" -printf '%P\n' -type f); do
+	local pattern=$(sed "s/__TASK__/*/g;s/__APP__/$POTATO_APP_NAME/g" <<< $POTATO_TASK_PATH_PATTERN)
+	local regexp=$(sed "s/__TASK__/\(\.\*\)/g;s/__APP__/$POTATO_APP_NAME/g" <<< $POTATO_TASK_PATH_PATTERN)
+	for f in $(find $root -path "*$pattern" -type f); do
 		[[ $f =~ $regexp ]] && echo ${BASH_REMATCH[1]}
 	done
 }
