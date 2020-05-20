@@ -15,6 +15,10 @@ function install_get_bashrc {
 }
 
 function install_prepare_bashrc {
-  # @TODO fix for macos; ensure ~/.bashrc is sourced
+  case $OSTYPE in darwin*)
+    # we are inside a Mac!
+    touch $HOME/.bash_profile
+    ln -s $HOME/.bash_profile $HOME/.bashrc
+  esac
   return
 }
