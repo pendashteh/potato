@@ -127,16 +127,16 @@ function potato_process_input_args() {
 
 function potato_task_path() {
 	local task=$1
+	local root=${2:-$POTATO_ROOT}
 	local path=$(sed "s/__TASK__/$task/g;s/__APP__/$POTATO_APP_NAME/g" <<< $POTATO_TASK_PATH_PATTERN)
-	echo "$POTATO_ROOT/$path"
+	echo "$root/$path"
 }
 
 function _potato_tasks_list() {
 	local root=$1
-	local pattern=$(sed "s/__TASK__/*/g;s/__APP__/$POTATO_APP_NAME/g" <<< $POTATO_TASK_PATH_PATTERN)
-	local regexp=$(sed "s/__TASK__/\(\.\*\)/g;s/__APP__/$POTATO_APP_NAME/g" <<< $POTATO_TASK_PATH_PATTERN)
-	for f in $(find $root -path "*$pattern" -type f); do
-		[[ $f =~ $regexp ]] && echo ${BASH_REMATCH[1]}
+	local pattern=$(potato_task_path '*' $root)
+	for pathname in $pattern; do
+		[[ $pathname =~ ${pattern//\*/\(\.\*\)} ]] && echo ${BASH_REMATCH[1]}
 	done
 }
 function potato_tasks_list() {
