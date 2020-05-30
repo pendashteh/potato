@@ -139,6 +139,7 @@ function potato_process_input_args() {
 
 function potato_task_path() {
 	local task=$1
+	[ "$task" = '--' ] && task=$POTATO_DEFAULT_TASK
 	# check if it's a valid task first
 	# not a valid task if it contains '/'
 	[[ "$task" == *'/'* ]] && echo '/dev/null' && return 1
