@@ -259,26 +259,28 @@ function potato_app_setup_autocomplete() {
 	complete -o nospace -F _potato_setup_autocomplete $app_name
 }
 
+POTATO_AUTOCOMPLETE_DEFAULT='default'
+
 # Copyright https://askubuntu.com/a/483149
 _potato_setup_autocomplete()
 {
 	local app_name=$1
 	local last_arg=$2
 
-  COMPREPLY=()
-	if [ "${#COMP_WORDS[@]}" -eq 2 ]; then
+	COMPREPLY=()
+	local depth=${#COMP_WORDS[@]}
+	if [ "$depth" -eq 2 ]; then
 		local list=$(potato_app_get_tasks $app_name 2)
 	  COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
-	elif [ "${#COMP_WORDS[@]}" -eq 3 ]; then
+	elif [ "${depth}" -gt 2 ]; then
 		local task=${COMP_WORDS[1]}
 		potato_load_app_by_name $app_name
-		potato_silent potato_load_task $task
-		if [ $? -eq 0 ]; then
-			local list=$(__autocomplete)
-			COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
+		potato_silent potato_load_task $task || return 1
+		local list=$(__autocomplete $depth)
+		if [ "$list" = "$POTATO_AUTOCOMPLETE_DEFAULT" ]; then
+			COMPREPLY=( $(compgen -f ${COMP_WORDS[COMP_CWORD]}) )
 		else
-			# will be seen by `set -x`
-			: 'ERROR:' $task 'is not a valid task'
+			COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
 		fi
 	fi
   return 0
@@ -296,6 +298,7 @@ function potato_silent {
 }
 
 function __autocomplete() {
+	local depth=${1:-1}
 	potato_comment "provide this function to allow autocompletion for arguments."
 }
 function __help() {
