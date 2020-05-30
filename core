@@ -12,6 +12,18 @@ declare -A POTATO_INFO
 
 function __load() {
 
+	for arg in $@; do
+		shift
+		case $arg in
+			'--ac'|'--setup-autocomplete')
+				echo 'Setting up autcomplete for '$1
+				potato_setup_autocomplete $1
+				shift
+			;;
+		esac
+	done
+	POTATO_CORE=$BASH_SOURCE
+
 	POTATO_DEFAULT_ID="default"
 	POTATO_DEFAULT_TASK="__main"
 	POTATO_TASK_PATH_PATTERN="___TASK__"
