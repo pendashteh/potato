@@ -24,10 +24,6 @@ function __load() {
 	done
 	POTATO_CORE=$BASH_SOURCE
 
-	POTATO_DEFAULT_ID="default"
-	POTATO_DEFAULT_TASK="__main"
-	POTATO_TASK_PATH_PATTERN="___TASK__"
-
 	potato_declare POTATO_DEBUG ""
 	potato_declare POTATO_DEBUG_VERBOSE ""
 }
@@ -78,6 +74,9 @@ function potato_load_app_by_name() {
 }
 
 function _potato_load_app() {
+	POTATO_DEFAULT_ID="default"
+	POTATO_DEFAULT_TASK="__main"
+	POTATO_TASK_PATH_PATTERN="___TASK__"
 	[ -e $POTATO_ROOT'/.potatorc' ] && . $POTATO_ROOT'/.potatorc'
 	POTATO_THIS_ID=$POTATO_DEFAULT_ID
 	POTATO_THIS_TASK="$POTATO_DEFAULT_TASK"
@@ -116,9 +115,10 @@ function potato_debug() {
 	local prefix="[DEBUG $__func_name() in $__source:$__line_number] "
 	local message
 	[ -z "$1" ] && message="$prefix" || message="$prefix$1"
-	[ $POTATO_DEBUG ] && echo $message
-	[ $POTATO_DEBUG_VERBOSE ] &&
-		echo "called from ${FUNCNAME[@]:1}"
+	[ $POTATO_DEBUG ] &&
+		echo $message &&
+			[ $POTATO_DEBUG_VERBOSE ] &&
+				echo "called from ${FUNCNAME[@]:1}"
 }
 
 function potato_process_input_args() {
@@ -139,6 +139,9 @@ function potato_process_input_args() {
 
 function potato_task_path() {
 	local task=$1
+	# check if it's a valid task first
+	# not a valid task if it contains '/'
+	[[ "$task" == *'/'* ]] && echo '/dev/null' && return 1
 	local root=${2:-$POTATO_ROOT}
 	local path=$(sed "s/__TASK__/$task/g;s/__APP__/$POTATO_APP_NAME/g" <<< $POTATO_TASK_PATH_PATTERN)
 	echo "$root/$path"
@@ -199,7 +202,7 @@ function potato_test_args() {
 
 function potato_load_task() {
 	local path=$(potato_task_path $1)
-	[ ! -f $path ] && potato_debug "Failed to load $path" && return 0
+	[ ! -f $path ] && potato_debug "Failed to load $path" && return 1
 	POTATO_SKIP_LOAD=1 . $BASH_SOURCE	# unsets functions set by previousely loaded task
 	. $path
 }
@@ -263,17 +266,34 @@ _potato_setup_autocomplete()
 
   COMPREPLY=()
 	if [ "${#COMP_WORDS[@]}" -eq 2 ]; then
-		local list=$(potato_app_get_tasks $app_name)
+		local list=$(potato_app_get_tasks $app_name 2)
 	  COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
 	elif [ "${#COMP_WORDS[@]}" -eq 3 ]; then
 		local task=${COMP_WORDS[1]}
 		potato_load_app_by_name $app_name
-		potato_load_task $task
-		local list=$(__autocomplete)
-		COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
+		potato_silent potato_load_task $task
+		if [ $? -eq 0 ]; then
+			local list=$(__autocomplete)
+			COMPREPLY=( $(compgen -W "$list" -- ${COMP_WORDS[COMP_CWORD]}) )
+		else
+			# will be seen by `set -x`
+			: 'ERROR:' $task 'is not a valid task'
+		fi
 	fi
   return 0
 }
+
+# Turns off debug and error reporting
+function potato_silent {
+	local cmd=$@
+	POTATO_DEBUG_OLD=$POTATO_DEBUG
+	POTATO_DEBUG=
+	$@ 2>/dev/null
+	res=$?
+	POTATO_DEBUG=$POTATO_DEBUG_OLD
+	return $res
+}
+
 function __autocomplete() {
 	potato_comment "provide this function to allow autocompletion for arguments."
 }
