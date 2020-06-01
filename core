@@ -53,14 +53,13 @@ function potato_load_app() {
 function potato_load_app_by_path() {
 	local approot=$1
 	[ -e $approot'/.potatorc' ] && . $approot'/.potatorc'
-	POTATO_APP_NAME=${POTATO_APP_NAME:-$(basename $approot)}
+	POTATO_APP_NAME=${POTATO_APP_NAME:-'LOADED'}
 	potato_app_set $POTATO_APP_NAME 'root' $approot
 	potato_app_set $POTATO_APP_NAME 'default_id' ${POTATO_DEFAULT_ID:-'me'}
 	potato_app_set $POTATO_APP_NAME 'default_task' ${POTATO_DEFAULT_TASK:-'main'}
 	potato_app_set $POTATO_APP_NAME 'pattern' ${POTATO_TASK_PATH_PATTERN:-'_{{task}}'}
 	# allow for `source`-ing local files
 	PATH="$approot:$PATH"
-
 }
 
 function potato_debug() {
