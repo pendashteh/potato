@@ -138,10 +138,13 @@ function potato_app_set() {
 	POTATO_INFO["${appname}_${key}"]=${value:-$default}
 }
 
-function potato_test_args() {
+function potato_info() {
+	echo '(to cancle unset POTATO_PRINT_INFO)'
 	echo "ID: 	"$POTATO_THIS_ID
 	echo "TASK:	"$POTATO_THIS_TASK
+	declare -p POTATO_APP_NAME
 	declare -p POTATO_THIS_ARGS
+	declare -p POTATO_INFO
 }
 
 function potato_load_task() {
@@ -159,6 +162,7 @@ function potato_run_task() {
 
 function potato_exec() {
 	potato_process_input_args
+	test "$POTATO_PRINT_INFO" && potato_info && return
 	potato_run_task $POTATO_THIS_TASK "${POTATO_THIS_ARGS[@]}"
 }
 
