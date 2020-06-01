@@ -22,8 +22,8 @@ function __load() {
 				shift
 			;;
 			'--exec')
-				potato_load_app $0
-				potato_exec "$@"
+				potato_load_app
+				potato_exec
 			;;
 		esac
 	done
@@ -35,7 +35,7 @@ function __load() {
 ###
 # potato_load_app will load an app by either path or name
 function potato_load_app() {
-	local appid=$1
+	local appid=${1:-$0}
 	if [ ! -z $(potato_app_get 'root' $appid) ]; then
 		POTATO_THIS_APP=$appid
 		return
@@ -65,16 +65,24 @@ function potato_debug() {
  	local __func_name=${FUNCNAME[1]}
  	local __source=$(basename ${BASH_SOURCE[1]})
 	local prefix="[DEBUG $__func_name() in $__source:$__line_number] "
-	local message
-	[ -z "$1" ] && message="$prefix" || message="$prefix$1"
-	[ $POTATO_DEBUG ] &&
-		echo $message &&
-			[ $POTATO_DEBUG_VERBOSE ] &&
-				echo "called from ${FUNCNAME[@]:1}"
+	echo '#[ DEBUG ]##########:'${1:-''}
+	echo "|_ $__source:$__line_number"
+	for i in ${!FUNCNAME[*]}; do
+		let last=${#FUNCNAME[*]}-1
+		[ $i -eq $last ] && continue
+		printf '  |-> %-20s @ %-4s:%s\n' ${FUNCNAME[$i]}'()' ${BASH_SOURCE[$i+1]} ${BASH_LINENO[$i]}
+	done
 	return 0
 }
 
 function potato_process_input_args() {
+	declare -a args=()
+	for arg in "${BASH_ARGV[@]}"; do
+		args=( "$arg" "${args[@]}" )
+	done
+
+	set -- "${args[@]}"
+
 	POTATO_THIS_ID=$(potato_app_get 'default_id')
 	POTATO_THIS_TASK=$(potato_app_get 'default_task')
 	if [ -f $(potato_task_path $1) ]; then
@@ -142,15 +150,14 @@ function potato_load_task() {
 }
 
 function potato_run_task() {
-	potato_load_task $1
+	potato_load_task $1 || return 1
 	shift
 	run $@
 }
 
 function potato_exec() {
-	potato_process_input_args "$@"
-	potato_load_task $POTATO_THIS_TASK
-	run "${POTATO_THIS_ARGS[@]}"
+	potato_process_input_args
+	potato_run_task $POTATO_THIS_TASK "${POTATO_THIS_ARGS[@]}"
 }
 
 function run() {
@@ -225,4 +232,4 @@ myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -
 whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
-[ -z "$POTATO_SKIP_LOAD" ] && __load "$@"
+[ -z "$POTATO_SKIP_LOAD" ] && __load
