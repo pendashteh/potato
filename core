@@ -152,7 +152,7 @@ function potato_load_task() {
 function potato_run_task() {
 	potato_load_task $1 || return 1
 	shift
-	run $@
+	run "$@"
 }
 
 function potato_exec() {
