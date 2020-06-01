@@ -71,6 +71,7 @@ function potato_debug() {
 		echo $message &&
 			[ $POTATO_DEBUG_VERBOSE ] &&
 				echo "called from ${FUNCNAME[@]:1}"
+	return 0
 }
 
 function potato_process_input_args() {
