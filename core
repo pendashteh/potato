@@ -62,6 +62,11 @@ function potato_load_app_by_path() {
 	PATH="$approot:$PATH"
 }
 
+# deprecated in API 3. Simply use `source`
+function potato_include() {
+	source "$@"
+}
+
 function potato_debug() {
 	local __line_number=$BASH_LINENO
  	local __func_name=${FUNCNAME[1]}
