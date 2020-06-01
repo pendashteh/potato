@@ -58,6 +58,9 @@ function potato_load_app_by_path() {
 	potato_app_set $POTATO_APP_NAME 'default_id' ${POTATO_DEFAULT_ID:-'me'}
 	potato_app_set $POTATO_APP_NAME 'default_task' ${POTATO_DEFAULT_TASK:-'main'}
 	potato_app_set $POTATO_APP_NAME 'pattern' ${POTATO_TASK_PATH_PATTERN:-'_{{task}}'}
+	# allow for `source`-ing local files
+	PATH="$approot:$PATH"
+
 }
 
 function potato_debug() {
