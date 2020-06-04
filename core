@@ -65,10 +65,9 @@ function potato_load_app_by_path() {
 
 	unset POTATO_APP_NAME
 
-	cd $approot
 	for rcfile in $rcfiles; do
-		if [ -f $rcfile ]; then
-			potato_include $rcfile
+		if [ -f $approot/$rcfile ]; then
+			potato_include $approot/$rcfile
 		fi
 	done
 
