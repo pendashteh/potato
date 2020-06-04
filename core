@@ -22,8 +22,11 @@ function __load() {
 				shift
 			;;
 			'--exec')
-				potato_load_app
-				potato_exec
+				potato_load_app ${1:-$0}
+				potato_exec "${@:2}"
+			;;
+			'--load')
+				potato_load_app ${1:-$0}
 			;;
 		esac
 	done
@@ -38,33 +41,55 @@ function potato_load_app() {
 	local appid=${1:-$0}
 	if [ ! -z $(potato_app_get 'root' $appid) ]; then
 		POTATO_THIS_APP=$appid
-		return
-	fi
-	local approot=$(dirname $(whereis_realpath "$appid"))
-	if [ -d $approot ]; then
-		potato_load_app_by_path $approot
+	else
+		potato_load_app_by_path $appid
 		POTATO_THIS_APP=$POTATO_APP_NAME
-		return
 	fi
-	return 1
+	# load all the includes
+	for inc in $(potato_app_get 'includes'); do
+		potato_include $inc
+	done
 }
 
 # Load or re-load the app by its path
 function potato_load_app_by_path() {
-	local approot=$1
-	[ -e $approot'/.potatorc' ] && . $approot'/.potatorc'
+	local path=$1
+	local rcfiles=".potatorc potato.rc local.potato.rc"
+	local fullpath=$(whereis_realpath "$path")
+	local approot=$(dirname $fullpath)
+	if [ -f $fullpath ] && [ "$path" != "$0" ]; then
+		rcfiles="$path $rcfiles"
+	elif [ -d $fullpath ]; then
+		approot=$fullpath
+	fi
+
+	unset POTATO_APP_NAME
+
+	cd $approot
+	for rcfile in $rcfiles; do
+		if [ -f $rcfile ]; then
+			potato_include $rcfile
+		fi
+	done
+
+	# allow for `source`-ing local files
+	PATH="$approot:$(dirname $POTATO_CORE):$PATH"
+
 	POTATO_APP_NAME=${POTATO_APP_NAME:-'LOADED'}
+
 	potato_app_set $POTATO_APP_NAME 'root' $approot
 	potato_app_set $POTATO_APP_NAME 'default_id' ${POTATO_DEFAULT_ID:-'me'}
 	potato_app_set $POTATO_APP_NAME 'default_task' ${POTATO_DEFAULT_TASK:-'main'}
-	potato_app_set $POTATO_APP_NAME 'pattern' ${POTATO_TASK_PATH_PATTERN:-'_{{task}}'}
-	# allow for `source`-ing local files
-	PATH="$approot:$PATH"
+	potato_app_set $POTATO_APP_NAME 'pattern' ${POTATO_TASK_PATH_PATTERN:-'___TASK__'}
+	potato_app_set $POTATO_APP_NAME 'includes' "${POTATO_INCLUDES[@]}"
 }
 
-# deprecated in API 3. Simply use `source`
 function potato_include() {
-	source "$@"
+	local file=$1
+	# check first, if the file exists locally
+	local fullpath=$(whereis_realpath $file)
+	test -f $fullpath && file=$fullpath
+	source $file
 }
 
 function potato_debug() {
@@ -83,13 +108,12 @@ function potato_debug() {
 }
 
 function potato_process_input_args() {
-	declare -a args=()
-	for arg in "${BASH_ARGV[@]}"; do
-		args=( "$arg" "${args[@]}" )
-	done
-
-	set -- "${args[@]}"
-
+	if [[ -z "$@" ]] && [ ! -z "$BASH_ARGC" ]; then
+		for arg in "${BASH_ARGV[@]}"; do
+			args=( "$arg" "${args[@]}" )
+		done
+		set -- "${args[@]}"
+	fi
 	POTATO_THIS_ID=$(potato_app_get 'default_id')
 	POTATO_THIS_TASK=$(potato_app_get 'default_task')
 	if [ -f $(potato_task_path $1) ]; then
@@ -135,12 +159,12 @@ function potato_app_get() {
 	local appname=${2:-$POTATO_APP_NAME}
 	echo ${POTATO_INFO["${appname}_${key}"]}
 }
+
 function potato_app_set() {
 	local appname=$1
 	local key=$2
-	local value=$3
-	local default=${4:-''}
-	POTATO_INFO["${appname}_${key}"]=${value:-$default}
+	local value=${@:3}
+	POTATO_INFO["${appname}_${key}"]=$value
 }
 
 function potato_info() {
@@ -166,7 +190,7 @@ function potato_run_task() {
 }
 
 function potato_exec() {
-	potato_process_input_args
+	potato_process_input_args "$@"
 	test "$POTATO_PRINT_INFO" && potato_info && return
 	potato_run_task $POTATO_THIS_TASK "${POTATO_THIS_ARGS[@]}"
 }
@@ -243,4 +267,4 @@ myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -
 whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; }
 whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; }
 
-[ -z "$POTATO_SKIP_LOAD" ] && __load
+[ -z "$POTATO_SKIP_LOAD" ] && __load "$@"
