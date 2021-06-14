@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 function run() {
-  local task=$(potato_get_arg 1)
-  [ -z "$task" ] && task=$(potato_get_task)
+  local task=$1
+  [ -z "$task" ] && task=$POTATO_THIS_TASK
   potato_load_task $task
   __help
 }
