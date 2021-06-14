@@ -101,7 +101,7 @@ function potato_debug() {
 	for i in ${!FUNCNAME[*]}; do
 		let last=${#FUNCNAME[*]}-1
 		[ $i -eq $last ] && continue
-		printf '  |-> %-20s @ %-4s:%s\n' ${FUNCNAME[$i]}'()' ${BASH_SOURCE[$i+1]} ${BASH_LINENO[$i]}
+		printf '  |-> %-20s @ %-4s:%s\n' ${FUNCNAME[$i]} '()' ${BASH_SOURCE[$i+1]} ${BASH_LINENO[$i]}
 	done
 	return 0
 }
