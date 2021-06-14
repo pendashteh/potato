@@ -8,6 +8,7 @@ function run() {
   local render_file=$(mktemp)
   _install_template_render $template_file replacemenets $render_file
   _install_write $render_file
+  mkdir -p $HOME/.potato/enabled
   echo 'Successfully installed.'
   return
 }
