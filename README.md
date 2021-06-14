@@ -11,18 +11,17 @@ It's designed to be fully customisable while allowing for receiving updates from
 ```
 
 # Usage
-Some examples:
 
 ```
+./potato list # Lists available add-ins
+
 ./potato add git # Adds git status to your command prompt
-```
 
-```
 ./potato remove git # Removes git status from your command prompt
 ```
 
 # Status
-Framework Version 2 is stable.
+Framework Version 3 is stable.
 
 Under active development.
 

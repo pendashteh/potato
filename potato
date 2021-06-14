@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+[ -z "$POTATO_ROOT" ] && POTATO_ROOT=$(realpath $(dirname $0))
+
 # If potato is not installed, assume the command is run as `./potato` and try to load the core locally.
-[ -z "$POTATO_CORE" ] && POTATO_CORE=$(dirname $0)/core
+[ -z "$POTATO_CORE" ] && POTATO_CORE=$POTATO_ROOT/core
 
 # Source potato core
 [ ! -r "$POTATO_CORE" ] && echo "Potato core was not found at "$POTATO_CORE && exit || . $POTATO_CORE
