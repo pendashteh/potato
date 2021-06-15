@@ -11,6 +11,9 @@ export POTATO_ROOT
 declare -A POTATO_INFO
 
 function __load() {
+	POTATO_DEFAULT_ID=${POTATO_DEFAULT_ID:-'DEFAULT'}
+	POTATO_DEFAULT_TASK=${POTATO_DEFAULT_TASK:-'main'}
+	POTATO_TASK_PATH_PATTERN=${POTATO_TASK_PATH_PATTERN:-'___TASK__'}
 	for arg in $@; do
 		shift
 		case $arg in
@@ -77,9 +80,9 @@ function potato_load_app_by_path() {
 	POTATO_APP_NAME=${POTATO_APP_NAME:-'LOADED'}
 
 	potato_app_set $POTATO_APP_NAME 'root' $approot
-	potato_app_set $POTATO_APP_NAME 'default_id' ${POTATO_DEFAULT_ID:-'me'}
-	potato_app_set $POTATO_APP_NAME 'default_task' ${POTATO_DEFAULT_TASK:-'main'}
-	potato_app_set $POTATO_APP_NAME 'pattern' ${POTATO_TASK_PATH_PATTERN:-'___TASK__'}
+	potato_app_set $POTATO_APP_NAME 'default_id' ${POTATO_DEFAULT_ID}
+	potato_app_set $POTATO_APP_NAME 'default_task' ${POTATO_DEFAULT_TASK}
+	potato_app_set $POTATO_APP_NAME 'pattern' ${POTATO_TASK_PATH_PATTERN}
 	potato_app_set $POTATO_APP_NAME 'includes' "${POTATO_INCLUDES[@]}"
 }
 
