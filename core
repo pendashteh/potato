@@ -25,8 +25,8 @@ function __load() {
 				shift
 			;;
 			'--exec')
-				potato_load_app ${1:-$0}
-				potato_exec "${@:2}"
+				potato_load_app $0
+				potato_exec "${@}"
 			;;
 			'--load')
 				potato_load_app ${1:-$0}
