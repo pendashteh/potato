@@ -261,6 +261,11 @@ function __help() {
 	potato_debug "provide this function in the task to enable task-specific help."
 }
 
+function __exec () {
+  echo '> '$@
+  "$@"
+}
+
 ##
 # @function whereis_realpath
 # Cross-platform equivalent for realpath()
