@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+POTATO_ROOT='' POTATO_CORE='' ./potato install
