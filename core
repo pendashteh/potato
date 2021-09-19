@@ -124,6 +124,12 @@ function potato_include() {
 	source $file
 }
 
+function potato_comment() {
+  test -z $POTATO_DEBUG && return
+  test -z $POTATO_DEBUG_VERBOSE && return
+  local comment=$1
+}
+
 function potato_debug() {
 	local __line_number=$BASH_LINENO
  	local __func_name=${FUNCNAME[1]}
@@ -274,11 +280,11 @@ _potato_setup_autocomplete()
 # Turns off debug and error reporting
 function potato_silent {
 	local cmd=$@
-	POTATO_DEBUG_OLD=$POTATO_DEBUG
+	_POTATO_DEBUG_TMP=$POTATO_DEBUG
 	POTATO_DEBUG=
 	$@ 2>/dev/null
 	res=$?
-	POTATO_DEBUG=$POTATO_DEBUG_OLD
+	POTATO_DEBUG=$_POTATO_DEBUG_TMP
 	return $res
 }
 
