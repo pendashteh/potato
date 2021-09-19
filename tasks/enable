@@ -3,8 +3,7 @@
 function run() {
   local addin_name=$1
   local paths=()
-  paths[0]=$HOME/.potato
-  paths[1]=$POTATO_ROOT
+  eval $(potato_declare_paths)
   for p in "${paths[@]}"; do
     local src=$p/available/$addin_name
     [ -f $src ] && ln --symbolic --force $src $HOME/.potato/enabled/
@@ -12,8 +11,7 @@ function run() {
 }
 function __autocomplete() {
   local paths=()
-  paths[0]=$HOME/.potato
-  paths[1]=$POTATO_ROOT
+  eval $(potato_declare_paths)
   for p in "${paths[@]}"; do
     ls $p/available
   done

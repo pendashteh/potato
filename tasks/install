@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 function run() {
-  local template_file=$POTATO_ROOT/bashrc.append  
+  local core=${1:-$POTATO_CORE}
+  local root=$(dirname $core)
+  local template_file=$root/bashrc.append  
   local -A replacemenets
-  replacemenets[POTATO_CORE]=$POTATO_ROOT/core
-  replacemenets[POTATO_ROOT]=$POTATO_ROOT
+  replacemenets[POTATO_CORE]=$POTATO_CORE
+  replacemenets[POTATO_APP]=$root/potato
   local render_file=$(mktemp)
   _install_template_render $template_file replacemenets $render_file
   _install_write $render_file
