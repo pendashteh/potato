@@ -27,6 +27,11 @@ declare -A POTATO_INFO
 # potato_exec some_task arg1 arg2
 # potato_exec some_other_task
 #
+# API:
+#
+# potato_hook_init() {}
+# ; will be called before every task run
+#
 ####
 
 potato_core() {
@@ -242,9 +247,14 @@ function potato_run_task() {
 	run "$@"
 }
 
+declare -F potato_hook_init >/dev/null || function potato_hook_init() {
+  : 'provide this function in your app to load before every task'
+}
+
 function potato_exec() {
 	potato_process_input_args "$@"
 	test "$POTATO_PRINT_INFO" && potato_info && return
+	potato_hook_init "${POTATO_THIS_ARGS[@]}"
 	potato_run_task $POTATO_THIS_TASK "${POTATO_THIS_ARGS[@]}"
 }
 
