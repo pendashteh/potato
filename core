@@ -68,38 +68,6 @@ potato_core() {
   POTATO_DEBUG_VERBOSE=${POTATO_DEBUG_VERBOSE:-''}
 }
 
-
-function __load() {
-	POTATO_DEFAULT_ID=${POTATO_DEFAULT_ID:-'DEFAULT'}
-	POTATO_DEFAULT_TASK=${POTATO_DEFAULT_TASK:-'main'}
-	POTATO_TASK_PATH_PATTERN=${POTATO_TASK_PATH_PATTERN:-'___TASK__'}
-	for arg in $@; do
-		case $arg in
-			--ac|--setup-autocomplete)
-				shift
-				potato_load_app ${1:-$0}
-				potato_setup_autocomplete
-			;;
-			--load)
-				shift
-				potato_load_app ${1:-$0}
-			;;
-			--exec)
-			  	shift
-				potato_load_app ${1:-$0}
-				potato_exec "${@}"
-			;;
-			*)
-				potato_load_app $0
-				potato_exec "${@}"
-			;;
-		esac
-	done
-	POTATO_CORE=$BASH_SOURCE
-	POTATO_DEBUG=${POTATO_DEBUG:-''}
-	POTATO_DEBUG_VERBOSE=${POTATO_DEBUG_VERBOSE:-''}
-}
-
 ###
 # potato_load_app will load an app by either path or name
 function potato_load_app() {
