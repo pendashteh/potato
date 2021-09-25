@@ -15,3 +15,10 @@ typeset -F __git_ps1 >/dev/null || {
 }
 
 export PS1='\[\033[36m\]\w\[\033[m\]\[\033[33;2m\]$(__git_ps1)\[\033[m\]> '
+
+# Setting up a global gitignore properly.
+# Source: https://stackoverflow.com/a/22885996/257479
+
+touch $HOME/.gitignore
+mkdir -p $HOME/.config/git
+ln -sf $HOME/.gitignore $HOME/.config/git/ignore
