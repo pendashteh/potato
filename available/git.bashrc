@@ -21,3 +21,6 @@ export PS1='\[\033[36m\]\w\[\033[m\]\[\033[33;2m\]$(__git_ps1)\[\033[m\]> '
 
 mkdir -p $HOME/.config/git
 touch $HOME/.config/git/ignore
+
+: https://stackoverflow.com/a/22303923/257479
+alias git-lost="git fsck --full --no-reflogs --unreachable --lost-found | grep commit | cut -d\  -f3 | xargs -n 1 git log -n 1 --pretty=oneline"
