@@ -1,3 +1,8 @@
+which git >/dev/null || {
+  echo 'install git'
+  return -1
+}
+
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWCOLORHINTS=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
