@@ -16,6 +16,23 @@ typeset -F __git_ps1 >/dev/null || {
 
 }
 
+git_completion=()
+git_completion+=( "/usr/share/bash-completion/completions/git" )
+git_completion+=( "/etc/bash_completion.d/git-completion" )
+git_completion_done=
+for _file in "${git_completion[@]}"; do
+  test -f $_file && {
+    git_completion=1
+    source $_file
+    break
+  }
+done
+
+test -z "$git_completion" && {
+  curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o $HOME/.git-completion.bash
+  source $HOME/.git-completion.bash
+}
+
 export PS1='\[\033[36m\]\w\[\033[m\]\[\033[33;2m\]$(__git_ps1)\[\033[m\]> '
 
 # Setting up a global gitignore properly.
