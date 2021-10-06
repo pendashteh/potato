@@ -2,6 +2,8 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWCOLORHINTS=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
 
+alias g=git
+
 typeset -F __git_ps1 >/dev/null || {
   if [ -e /usr/lib/git-core/git-sh-prompt ]; then
     # https://stackoverflow.com/a/55082075/257479
