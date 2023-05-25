@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-XDG_CONFIG_DIRS="$XDG_CONFIG_DIRS:$HOME/.potato:$(dirname $POTATO_CORE)"
+POTATO_CONFIG_DIRS="$HOME/.potato:$(dirname $POTATO_CORE)"
 
 . $POTATO_CORE
