@@ -29,7 +29,7 @@ function run_postcommand() {
 function _source_all {
   local dir=$1
   local pattern=$2
-  for file in $(find $dir -maxdepth 1 -name "$pattern"); do
+  for file in $(find $dir -maxdepth 1 -name "$pattern" | sort); do
     source $file
   done
 }
