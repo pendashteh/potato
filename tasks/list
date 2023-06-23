@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function run() {
-  IFS=':' read -ra paths <<< "$XDG_CONFIG_DIRS"
+  IFS=':' read -ra paths <<< "$POTATO_CONFIG_DIRS"
   for p in "${paths[@]}"; do
     echo "Add-ins found in ${p}:"
     [ -d $p/available ] && printf ' - %s\n' $(ls $p/available/ 2>/dev/null) || echo ' * No add-in found'

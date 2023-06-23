@@ -12,7 +12,7 @@ function run() {
 function __autocomplete() {
   local paths=()
   eval $(potato_declare_paths)
-  for p in "$XDG_CONFIG_DIRS"; do
+  for p in "$POTATO_CONFIG_DIRS"; do
     ls $p/available
   done
 }
