@@ -1,4 +1,0 @@
-export POTATO_DEBUG=1
-export POTATO_DEBUG_VERBOSE=
-export POTATO_CORE="{{POTATO_CORE}}"
-. $POTATO_CORE --exec {{POTATO_APP}} startup

@@ -1,0 +1,43 @@
+#! /usr/bin/env bash
+
+__datadir=$HOME/.potato
+
+__puton__ () {
+  mkdir -p $__datadir/toppings
+}
+
+startup__ () {
+  __sourceall '*.bashrc'
+}
+
+__sourceall () {
+  local toppings=$@
+  for file in $__datadir/toppings/$toppings; do
+    source $file
+  done
+}
+
+enable__help='@does enable a topping'
+enable__ () {
+  local toppings=$@
+  for file in $toppings; do
+    ln -sf $(realpath $file) $__datadir/toppings
+  done
+}
+
+disable__help='@does disable a topping'
+disable__ () {
+  local toppings=$@
+  for file in $toppings; do
+    rm $__datadir/toppings/$file
+  done
+}
+
+list__help='@does list available toppings'
+list__ () {
+  local ext=${1:-*}
+  cd $__datadir/toppings
+  printf '%s\n' *$ext
+}
+
+. undies

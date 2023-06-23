@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-export POTATO_CORE=$(dirname $(realpath $0))'/core'
-$(dirname $POTATO_CORE)/potato install
