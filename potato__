@@ -8,6 +8,24 @@ __puton__ () {
 
 startup__ () {
   __sourceall '*.bashrc'
+  trap "__precommand" DEBUG
+  FIRST_PROMPT=1
+  PROMPT_COMMAND="__postcommand"
+}
+
+__precommand () {
+  test -z "$AT_PROMPT" && return
+  unset AT_PROMPT
+  __sourceall '*.precommand'
+}
+
+__postcommand () {
+  AT_PROMPT=1
+  if [ -n "$FIRST_PROMPT" ]; then
+    unset FIRST_PROMPT
+    return
+  fi
+  __sourceall '*.postcommand'
 }
 
 __sourceall () {
