@@ -7,6 +7,7 @@ __puton__ () {
 }
 
 startup__ () {
+  echo "It's a potato farm!"
   __sourceall '*.bashrc'
   trap "__precommand" DEBUG
   FIRST_PROMPT=1
@@ -16,7 +17,7 @@ startup__ () {
 __precommand () {
   test -z "$AT_PROMPT" && return
   unset AT_PROMPT
-  __sourceall '*.precommand'
+  # __sourceall '*.precommand'
 }
 
 __postcommand () {
@@ -25,12 +26,12 @@ __postcommand () {
     unset FIRST_PROMPT
     return
   fi
-  __sourceall '*.postcommand'
+  # __sourceall '*.postcommand'
 }
 
 __sourceall () {
   local toppings=$@
-  for file in $__datadir/toppings/$toppings; do
+  for file in $(find $__datadir/toppings -name $toppings); do
     source $file
   done
 }
