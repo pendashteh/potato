@@ -17,7 +17,7 @@ startup__ () {
 __precommand () {
   test -z "$AT_PROMPT" && return
   unset AT_PROMPT
-  # __sourceall '*.precommand'
+  __sourceall '*.precommand'
 }
 
 __postcommand () {
@@ -26,12 +26,12 @@ __postcommand () {
     unset FIRST_PROMPT
     return
   fi
-  # __sourceall '*.postcommand'
+  __sourceall '*.postcommand'
 }
 
 __sourceall () {
   local toppings=$@
-  for file in $(find $__datadir/toppings -name $toppings | sort); do
+  for file in $(find $__datadir/toppings -name "$toppings" | sort); do
     source $file
   done
 }
