@@ -40,6 +40,7 @@ enable__help='@does enable a topping'
 enable__ () {
   local toppings=$@
   for file in $toppings; do
+    echo enabling $file
     ln -sf $(realpath $file) $__datadir/toppings
   done
 }
@@ -48,6 +49,7 @@ disable__help='@does disable a topping'
 disable__ () {
   local toppings=$@
   for file in $toppings; do
+    echo disabling $file
     rm $__datadir/toppings/$file
   done
 }
