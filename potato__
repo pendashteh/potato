@@ -31,7 +31,7 @@ __postcommand () {
 
 __sourceall () {
   local toppings=$@
-  for file in $(find $__datadir/toppings -name $toppings); do
+  for file in $(find $__datadir/toppings -name $toppings | sort); do
     source $file
   done
 }
