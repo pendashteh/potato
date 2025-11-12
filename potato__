@@ -6,6 +6,7 @@ __puton__ () {
   mkdir -p $__datadir/toppings
 }
 
+startup__help="@should be sourced @does prepare shell for toppigs"
 startup__ () {
   echo "It's a potato farm!"
   __sourceall '*.bashrc'
