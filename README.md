@@ -13,9 +13,9 @@ The functionality is split in two parts:
 The main feature of potato is the introduction to the concept of **toppings**.
 
 Toppings are bash snippets that can be loaded at various events:
-1. When shell is loaded
-2. Before a command is executed
-3. After a command is executed
+1. When shell is loaded (**.bashrc**)
+2. Before a command is executed (**.precommand**)
+3. After a command is executed (**.postcommand**)
 
 Examples:
 
